@@ -18,6 +18,7 @@
 
   <!-- Hero -->
   <section id="home" class="relative flex items-center justify-center min-h-screen bg-center bg-cover" style="background-image:url('hero 4.png')">
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
     <div class="absolute inset-0 bg-black/60"></div>
     <div class="relative z-10 max-w-3xl text-center space-y-6 sr">
       <h1 class="text-4xl md:text-6xl font-bold text-amber-200">Alhäm: Your Partner in<br>Premium Wholesale Spices.</h1>
@@ -28,6 +29,8 @@
       </div>
     </div>
   </section>
+
+  <div id="floating-contact"></div>
 
   <!-- Quality Features -->
   <section id="quality" class="py-24 px-6 sr">
@@ -255,8 +258,69 @@
   </footer>
 
   <script src="https://unpkg.com/scrollreveal"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://unpkg.com/three/build/three.min.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
   <script>
     ScrollReveal().reveal('.sr', { distance: '50px', duration: 800, easing: 'ease', origin: 'bottom', interval: 100 });
+
+    gsap.from('#home h1', { duration: 1, y: -50, opacity: 0, ease: 'power2.out' });
+    gsap.from('#home p', { duration: 1, y: 50, opacity: 0, delay: 0.2, ease: 'power2.out' });
+    gsap.from('#home a', { duration: 1, scale: 0.8, opacity: 0, stagger: 0.2, delay: 0.4, ease: 'back.out(1.7)' });
+
+    const canvas = document.getElementById('hero-canvas');
+    if (canvas && window.THREE) {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const texture = new THREE.TextureLoader().load('pepper.jpeg');
+      const geometry = new THREE.BoxGeometry(2, 2, 2);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+      camera.position.z = 5;
+      function animateThree() {
+        requestAnimationFrame(animateThree);
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      }
+      animateThree();
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    if (window['framer-motion']) {
+      const { motion, AnimatePresence } = window['framer-motion'];
+      const ContactButton = () => {
+        const [open, setOpen] = React.useState(false);
+        return React.createElement(React.Fragment, null,
+          React.createElement(motion.button, {
+            className: 'fixed bottom-6 right-6 bg-amber-700 text-white p-4 rounded-full shadow-lg',
+            whileHover: { scale: 1.1 },
+            whileTap: { scale: 0.9 },
+            onClick: () => setOpen(!open)
+          }, React.createElement('i', { className: 'ph ph-envelope' })),
+          React.createElement(AnimatePresence, null, open && React.createElement(motion.div, {
+            initial: { opacity: 0, y: 50 },
+            animate: { opacity: 1, y: 0 },
+            exit: { opacity: 0, y: 50 },
+            className: 'fixed bottom-20 right-6 bg-white p-6 rounded-lg shadow-lg w-72'
+          },
+            React.createElement('p', { className: 'mb-2 font-semibold text-gray-800' }, 'Reach out to us!'),
+            React.createElement('a', { href: '#contact', className: 'bg-amber-700 text-white py-2 px-4 rounded-full inline-block' }, 'Open Contact Form')
+          ))
+        );
+      };
+      const root = ReactDOM.createRoot(document.getElementById('floating-contact'));
+      root.render(React.createElement(ContactButton));
+    }
   </script>
 </body>
 </html>
