@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
 
+    <script src="https://unpkg.com/@motionone/dom/dist/motion.min.js"></script>
     <style>
         /* Custom CSS for the Product Card and Navbar */
         body {
@@ -715,6 +716,20 @@
             font-size: 3.5em; /* Larger icon size */
             color: #556B2F; /* New green color for icons */
         }
+        /* --- Custom 3D Hero and Section Background Styles --- */
+        .hero-3d-container { position:absolute; inset:0; pointer-events:none; z-index:2; }
+        .hero-3d-container img { position:absolute; width:120px; transform-style:preserve-3d; }
+        .spice-1 { top:15%; left:10%; }
+        .spice-2 { top:45%; right:8%; }
+        .spice-3 { bottom:12%; left:35%; }
+        .section-bg { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0.08; z-index:-1; }
+        #quality .section-bg { background-image:url("hero 2.png"); }
+        #products .section-bg { background-image:url("hero 3.png"); }
+        #contact .section-bg { background-image:url("hero 1.png"); }
+        .uiverse-btn { position:relative; padding:12px 24px; color:white; border:none; cursor:pointer; border-radius:8px; background-size:300% 100%; background-image:linear-gradient(60deg,#ff8a00,#e52e71,#9b32fb,#3e1fff); transition:background-position .6s; overflow:hidden; }
+        .uiverse-btn:hover { background-position:100% 0; }
+        .uiverse-btn::before { content:""; position:absolute; inset:0; background:inherit; filter:blur(8px); opacity:0; transition:opacity .6s; }
+        .uiverse-btn:hover::before { opacity:1; }
         /* --- End Glass Cards --- */
     </style>
 </head>
@@ -761,6 +776,12 @@
         <img src="hero 4.png" alt="Spices background" class="hero-image-background">
         <!-- Overlay for darkening the image and improving text contrast -->
         <div class="absolute inset-0 bg-black opacity-40 z-0"></div> <!-- Added dark overlay -->
+        <div id="hero-inner" class="relative w-full h-full">
+            <div class="hero-3d-container">
+                <img src="hero 1.png" alt="" class="spice-1">
+                <img src="hero 2.png" alt="" class="spice-2">
+                <img src="hero 3.png" alt="" class="spice-3">
+            </div>
 
         <div class="container mx-auto flex flex-col items-center justify-center h-full z-10">
             <!-- Added mt-16 to shift content down from top, on top of existing pt-16 (padding-top) -->
@@ -835,9 +856,11 @@
             <div class="hidden lg:block lg:w-1/2 h-full">
                 </div>
         </div>
+        </div>
     </section>
 
     <section id="quality" class="py-28 px-6 bg-white relative overflow-hidden">
+        <div class="section-bg"></div>
         <div class="container mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 font-elegant-serif text-[#8B0000]">Why Partner with Alhäm?</h2>
@@ -912,6 +935,7 @@
     </section>
 
     <section id="products" class="py-24 px-6 bg-white">
+        <div class="section-bg"></div>
         <div class="container mx-auto max-w-7xl">
             <div class="text-center mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 font-elegant-serif text-[#8B0000]">Our Premium Selection for Wholesale</h2>
@@ -1035,7 +1059,7 @@
             </div>
             
             <div class="text-center mt-12 fade-in-section">
-                <a href="#contact" class="inline-block bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
+                <a href="#contact" class="inline-block uiverse-btn">
                     View Full Wholesale Catalog / Request Custom Quote
                 </a>
             </div>
@@ -1093,7 +1117,7 @@
             </div>
 
             <div class="text-center mt-12 fade-in-section">
-                <a href="#" class="inline-block bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
+                <a href="#" class="inline-block uiverse-btn">
                     View All Recipes
                 </a>
             </div>
@@ -1101,6 +1125,7 @@
     </section>
 
     <section id="contact" class="py-24 px-6 bg-white">
+        <div class="section-bg"></div>
         <div class="container mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-section font-elegant-serif text-[#8B0000]">Partner with Alhäm: Request a Quote</h2>
@@ -1196,7 +1221,7 @@
                             <textarea id="contact-message" rows="4" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="Looking for 500kg of Cardamom 8+ MM delivered monthly."></textarea>
                         </div>
                         
-                        <button type="submit" class="bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
+                        <button type="submit" class="uiverse-btn">
                             Submit Request
                         </button>
                     </form>
@@ -1392,6 +1417,38 @@
                             start: "top 90%",
                             toggleActions: "play none none none",
                             once: true
+                        }
+                    });
+                });
+                // Floating spice images animation
+                gsap.to(".spice-1", { rotationY:360, rotationX:45, y:-30, duration:20, repeat:-1, ease:"none" });
+                gsap.to(".spice-2", { rotationY:-360, rotationX:30, y:20, duration:22, repeat:-1, ease:"none" });
+                gsap.to(".spice-3", { rotationY:360, rotationX:-30, y:-20, duration:18, repeat:-1, ease:"none" });
+
+                // Hero tilt interaction using Motion One
+                const heroInner = document.getElementById("hero-inner");
+                if (heroInner && window.motion) {
+                    heroInner.addEventListener("mousemove", (e) => {
+                        const rect = heroInner.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        motion.animate(heroInner, { rotateX: y / 40, rotateY: -x / 40 }, { duration: 0.6 });
+                    });
+                    heroInner.addEventListener("mouseleave", () => {
+                        motion.animate(heroInner, { rotateX: 0, rotateY: 0 }, { duration: 0.6 });
+                    });
+                }
+
+                // Parallax for section backgrounds
+                gsap.utils.toArray(".section-bg").forEach((bg) => {
+                    gsap.to(bg, {
+                        yPercent: 20,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: bg.parentElement,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
                         }
                     });
                 });
