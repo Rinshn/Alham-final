@@ -1,1531 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALHAM | Premium Indian Spices - B2B Wholesale</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Updated Google Fonts link to include Montserrat and Playfair Display -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
-
-    <style>
-        /* Custom CSS for the Product Card and Navbar */
-        body {
-            font-family: 'Montserrat', sans-serif; /* Default body font changed to Montserrat */
-            margin: 0;
-            overflow-x: hidden; /* Prevent horizontal scrolling from background elements */
-            background-color: #fff; /* Plain white background */
-        }
-        /* Apply elegant serif font to headings */
-        .font-elegant-serif {
-            font-family: 'Playfair Display', serif;
-        }
-        /* Adjusted min-height to ensure hero section covers the viewport height */
-        .hero-section-height {
-            height: 100vh; /* Set to 100vh to ensure it covers the viewport height */
-            position: relative; /* Needed for absolute positioning of video */
-            overflow: hidden; /* Hide overflowing video parts */
-        }
-
-        /* Image background styling for hero section */
-        .hero-image-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the image covers the entire area */
-            z-index: -1; /* Place behind content */
-            /* Removed brightness filter, now handled by the overlay div */
-        }
-        #hero-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            z-index: 0;
-        }
-
-        /* Ensure Lenis uses the correct body for smooth scrolling */
-        html.lenis {
-          height: auto;
-        }
-
-        .lenis.lenis-smooth {
-          scroll-behavior: auto;
-        }
-
-        .lenis.lenis-smooth [data-lenis-prevent] {
-          overscroll-behavior: contain;
-        }
-
-        .lenis.lenis-stopped {
-          overflow: hidden;
-        }
-
-        .lenis.lenis-scrolling iframe {
-          pointer-events: none;
-        }
-
-        /* Fixed Navbar styles */
-        #navbar {
-            background-color: transparent; /* Initial transparent background */
-            transition: background-color 0.3s ease-in-out, border-radius 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-        }
-
-        #navbar.scrolled {
-            background-color: white; /* Solid white background on scroll */
-            border-bottom-left-radius: 0.75rem; /* rounded-b-xl */
-            border-bottom-right-radius: 0.75rem; /* rounded-b-xl */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
-        }
-
-        /* Custom underline animation for navbar links */
-        .nav-link-underline {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 2px;
-            overflow: hidden;
-        }
-
-        .nav-link-underline::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: #8B0000; /* Underline color changed to new red */
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease-out;
-        }
-
-        .nav-link-underline:hover::after {
-            transform: scaleX(1);
-        }
-
-        /* Mobile hamburger menu */
-        .hamburger {
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            transition: all 0.25s;
-            position: relative;
-            z-index: 1050; /* Ensure it's above the mobile menu itself */
-        }
-        
-        .hamburger-top,
-        .hamburger-middle,
-        .hamburger-bottom {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 24px;
-            height: 2px;
-            background: white; /* Changed to white for better visibility on dark hero */
-            transform: rotate(0);
-            transition: all 0.5s;
-        }
-        
-        /* Adjust hamburger colors when navbar is scrolled */
-        #navbar.scrolled .hamburger-top,
-        #navbar.scrolled .hamburger-middle,
-        #navbar.scrolled .hamburger-bottom {
-            background: #333; /* Darker color when scrolled */
-        }
-
-        .hamburger-middle {
-            transform: translateY(7px);
-        }
-        
-        .hamburger-bottom {
-            transform: translateY(14px);
-        }
-        
-        .open .hamburger-top {
-            transform: rotate(45deg) translateY(6px) translateX(6px);
-            background: #8B0000 !important; /* New red when open, override scrolled state */
-        }
-        
-        .open .hamburger-middle {
-            display: none;
-        }
-        
-        .open .hamburger-bottom {
-            transform: rotate(-45deg) translateY(6px) translateX(-6px);
-            background: #8B0000 !important; /* New red when open, override scrolled state */
-        }
-        
-        .mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out;
-            background-color: rgba(0, 0, 0, 0.9); /* Darker background for mobile menu */
-            border-radius: 0.75rem; /* rounded-xl */
-            margin-top: 1rem; /* Space from the top part of the navbar */
-            position: absolute;
-            top: 100%; /* Position below the main navbar */
-            left: 0;
-            width: 100%;
-            padding: 0; /* Remove padding when closed */
-        }
-        
-        .mobile-menu.open {
-            max-height: 500px; /* Adjust based on content */
-            padding: 1rem; /* Add padding when open */
-        }
-
-        /* Particles for About Us section */
-        .spice-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Allows clicks to pass through */
-        }
-
-        .spice-particles .particle {
-            position: absolute;
-            font-size: 3rem; /* Adjust size as needed */
-            opacity: 0.2; /* Subtle */
-            color: #B8860B; /* Gold for subtle color */
-            pointer-events: none;
-        }
-
-        /* About Us heading text animation overflow fix */
-        .about-heading-animated {
-            overflow: hidden; /* Crucial for text reveal, hides text when yPercent is 100 */
-        }
-        .about-text-line {
-            display: block; /* Ensure each span behaves as a block for yPercent animation */
-        }
-
-
-        /* --- EXISTING PRODUCT CARD STYLES --- */
-        .card {
-            --font-color: #333333; /* Darker text */
-            --font-color-sub: #666;
-            --bg-color: #fff;
-            --main-color: #333333; /* Darker main color for borders/shadows */
-            --main-focus: #2d8cf0; /* Not directly used, but kept for variable consistency */
-            width: 230px;
-            background: var(--bg-color);
-            border: 2px solid var(--main-color);
-            box-shadow: 4px 4px var(--main-color);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 20px;
-            gap: 10px;
-            font-family: 'Montserrat', sans-serif; /* Card font changed to Montserrat */
-            margin: 1rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Integrated hover effect */
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .card-img {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 120px; /* Fixed height for image container */
-            overflow: hidden;
-            border-radius: 5px;
-        }
-
-        .card-img img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform 0.5s ease;
-        }
-
-        .card-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 500;
-            text-align: center;
-            color: var(--font-color);
-        }
-
-        .card-subtitle {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--font-color-sub);
-            text-align: center;
-            min-height: 40px; /* Ensure consistent height for subtitle */
-        }
-
-        .card-divider {
-            width: 100%;
-            border: 1px solid var(--main-color);
-            border-radius: 50px;
-        }
-
-        .card-footer {
-            display: flex;
-            flex-direction: row;
-            justify-content: center; /* Center content when no button */
-            align-items: center;
-        }
-
-        .card-price {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--font-color);
-            text-align: center;
-            width: 100%; /* Take full width of footer */
-        }
-
-        .card-price span {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--font-color-sub);
-        }
-
-        /* Responsive grid for cards */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            justify-items: center; /* Center items in the grid */
-            padding: 20px;
-        }
-        /* --- END EXISTING PRODUCT CARD STYLES --- */
-
-        /* --- NEW BLOG CARD STYLES (Flip Card) --- */
-        .blog-card {
-            overflow: visible; /* Allow content to escape bounds for shadows/transforms */
-            width: 280px; /* Made cards bigger */
-            height: 350px; /* Made cards bigger */
-            perspective: 1000px; /* For 3D flip effect */
-            margin: 1rem; /* Consistent margin with other cards */
-        }
-
-        .blog-card .content {
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 500ms ease-in-out; /* Slower transition for a smoother flip */
-            box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.3); /* Stronger, elegant shadow */
-            border-radius: 8px; /* Slightly more rounded corners */
-        }
-
-        .blog-card:hover .content {
-            transform: rotateY(180deg);
-        }
-
-        .blog-card .front, .blog-card .back {
-            background-color: transparent; /* Changed to transparent for white back-content */
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border-radius: 8px; /* Match content border-radius */
-            overflow: hidden;
-            color: white; /* Default text color for front/back */
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .blog-card .back {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .blog-card .back::before {
-            position: absolute;
-            content: ' ';
-            display: block;
-            width: 160px;
-            height: 160%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8), transparent); /* Gold gradient */
-            animation: rotation_481 5000ms infinite linear;
-        }
-
-        .blog-card .back-content {
-            position: absolute;
-            width: 98%; /* Adjusted to be slightly smaller than card */
-            height: 98%;
-            background-color: white; /* Changed to white */
-            border-radius: 6px; /* Slightly smaller for inner effect */
-            color: #8B0000; /* Changed text color to red */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 20px; /* Reduced gap */
-            font-size: 1.1em; /* Slightly larger text */
-            text-align: center;
-            padding: 10px; /* Added padding */
-        }
-        .blog-card .back-content strong {
-            font-size: 1.2em;
-            color: #8B0000; /* Changed "View Recipe" color to red */
-        }
-        .blog-card .back-content svg {
-            stroke: #8B0000; /* Changed SVG stroke to red */
-            fill: #8B0000; /* Changed SVG fill to red */
-        }
-
-        @keyframes rotation_481 {
-            0% { transform: rotateZ(0deg); }
-            100% { transform: rotateZ(360deg); }
-        }
-
-        .blog-card .front {
-            transform: rotateY(180deg);
-        }
-
-        .blog-card .front .front-content {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 15px; /* Increased padding for better spacing */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end; /* Align content to bottom */
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); /* Dark gradient from bottom */
-        }
-
-        .blog-card .front-content .badge {
-            background-color: rgba(139, 0, 0, 0.6); /* Semi-transparent deep red badge */
-            padding: 4px 12px; /* Adjusted padding */
-            border-radius: 15px; /* More rounded */
-            backdrop-filter: blur(4px); /* Stronger blur */
-            width: fit-content;
-            font-size: 0.75em;
-            color: white;
-            margin-bottom: 8px; /* Space between badge and description */
-        }
-
-        .blog-card .description {
-            box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.4); /* Adjusted shadow */
-            width: 100%;
-            padding: 12px; /* Adjusted padding */
-            background-color: rgba(0, 0, 0, 0.7); /* More transparent background for text */
-            backdrop-filter: blur(8px); /* Stronger blur for text area */
-            border-radius: 8px; /* Match card border-radius */
-            color: white; /* Ensure text is white */
-        }
-
-        .blog-card .title {
-            font-size: 14px; /* Slightly larger title font */
-            font-weight: 700; /* Bold title */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px; /* Space below title */
-        }
-
-        .blog-card .title p {
-            width: 80%; /* Give title more space */
-            font-family: 'Playfair Display', serif; /* Apply elegant font to recipe titles */
-            color: #B8860B; /* Gold color for recipe titles */
-        }
-        .blog-card .title svg {
-            fill: #8B0000; /* Red bookmark icon */
-            width: 18px; /* Larger icon */
-            height: 18px;
-        }
-
-        .blog-card .card-footer {
-            color: rgba(255, 255, 255, 0.7); /* Lighter gray for footer text */
-            margin-top: 5px;
-            font-size: 10px; /* Slightly larger footer font */
-            font-weight: 500;
-        }
-
-        .blog-card .front .img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: -1; /* Place behind front-content */
-        }
-        .blog-card .front .img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Animated Circles */
-        .blog-card .circle {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background-color: #B8860B; /* Gold primary */
-            position: absolute;
-            filter: blur(15px);
-            animation: floating 2600ms infinite linear;
-            z-index: -2; /* Even further back */
-        }
-
-        .blog-card #bottom {
-            background-color: #8B0000; /* Deep Red */
-            left: 50px;
-            top: 0px;
-            width: 150px;
-            height: 150px;
-            animation-delay: -800ms;
-        }
-
-        .blog-card #right {
-            background-color: #D4AF37; /* Lighter Gold */
-            left: 160px;
-            top: -80px;
-            width: 30px;
-            height: 30px;
-            animation-delay: -1800ms;
-        }
-
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(10px); }
-            100% { transform: translateY(0px); }
-        }
-        /* --- END NEW BLOG CARD STYLES --- */
-
-        /* Removed the old product card hover effect as it's now integrated into .card */
-        .product-card-hover-effect {
-            transition: none; /* Override any lingering transition from previous definition */
-            box-shadow: none; /* Override any lingering shadow */
-        }
-        .product-card-hover-effect:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* --- CTA Button for Request a Quote --- */
-        .cta-quote {
-            border: 2px solid white; /* Added white border for contrast */
-            background: transparent;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            padding: 11px 33px; /* Consistent padding with other button */
-            font-family: 'Montserrat', sans-serif;
-            color: white; /* Changed text color to white */
-            margin-right: 15px;
-            text-decoration: none;
-            transition: all 0.3s ease; /* Smooth transition */
-            border-radius: 9999px; /* rounded-full */
-            font-size: 14px; /* Adjust font size to fit */
-            font-weight: 600; /* Make it bolder */
-            text-transform: uppercase; /* Match the style */
-            letter-spacing: 2px; /* Slight letter spacing */
-        }
-
-        .cta-quote span {
-            padding-bottom: 0; /* Remove old padding */
-            padding-right: 0; /* Remove old padding */
-            letter-spacing: inherit; /* Inherit from button */
-            font-size: inherit; /* Inherit from button */
-            text-transform: inherit; /* Inherit from button */
-            font-weight: inherit; /* Inherit from button */
-        }
-
-        .cta-quote svg {
-            transform: translateX(0); /* Reset transform */
-            transition: all 0.3s ease;
-            fill: white; /* Changed SVG fill to white */
-            margin-left: 10px; /* Space between text and arrow */
-        }
-
-        .cta-quote:hover {
-            background-color: rgba(255, 255, 255, 0.1); /* Subtle white background on hover */
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* Soft white shadow */
-        }
-
-        .cta-quote:hover svg {
-            transform: translateX(5px); /* Slightly move on hover */
-        }
-
-        .cta-quote:active svg {
-            transform: scale(0.9);
-        }
-
-        /* Remove hover-underline-animation-quote and its after pseudo-element */
-        .hover-underline-animation-quote:after {
-            display: none;
-        }
-        .hover-underline-animation-quote {
-            padding-bottom: 0; /* Remove padding */
-        }
-
-
-        /* --- CTA Button for Get an Alhäm Recipe --- */
-        .cta-recipe {
-            display: flex;
-            padding: 11px 33px;
-            text-decoration: none;
-            font-size: 14px; /* Consistent font size */
-            color: white; /* Default text color is white */
-            background: transparent;
-            border: 2px solid #B8860B; /* Changed border to gold */
-            transition: 0.5s; /* Faster transition */
-            box-shadow: none;
-            transform: skewX(-15deg);
-            cursor: pointer;
-            margin-left: 15px;
-            font-family: 'Montserrat', sans-serif;
-            border-radius: 8px; /* Slightly rounded for the skewed shape */
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            overflow: hidden; /* Hide overflowing skewed elements */
-            position: relative; /* For absolute positioning of skewed text */
-        }
-
-        .cta-recipe:focus {
-            outline: none;
-        }
-
-        .cta-recipe:hover {
-            transition: 0.5s;
-            background: #8B0000; /* New red brand color on hover */
-            color: white; /* White text on hover */
-            box-shadow: 10px 10px 0 #B8860B; /* Gold accent on hover */
-        }
-
-        .cta-recipe .second {
-            transition: 0.5s;
-            margin-right: 0px;
-        }
-
-        .cta-recipe:hover .second {
-            transition: 0.5s;
-            margin-right: 45px;
-        }
-
-        .cta-recipe .span {
-            transform: skewX(15deg);
-            white-space: nowrap;
-            position: relative; /* To position it within the button */
-            z-index: 1; /* Ensure text is above background elements */
-        }
-
-        .cta-recipe .second-svg-container {
-            width: 20px;
-            margin-left: 10px; /* Reduced margin */
-            position: relative;
-            top: auto; /* Reset top */
-            display: flex;
-            align-items: center;
-            z-index: 1; /* Ensure SVG is above background elements */
-        }
-
-        .cta-recipe .one, .cta-recipe .two, .cta-recipe .three {
-            transition: 0.4s;
-            fill: #B8860B; /* Default SVG fill to gold */
-        }
-
-        .cta-recipe:hover .three,
-        .cta-recipe:hover .one,
-        .cta-recipe:hover .two {
-            fill: white; /* White SVG paths on hover */
-        }
-
-        @keyframes color_anim {
-            0% {
-                fill: white;
-            }
-            50% {
-                fill: #B8860B; /* New gold accent */
-            }
-            100% {
-                fill: white;
-            }
-        }
-        /* --- End CTA Button for Get an Alhäm Recipe --- */
-
-        /* --- Glass Cards for Top Products --- */
-        .glass-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            padding: 20px 0; /* Add some vertical padding */
-        }
-
-        .glass {
-            position: relative;
-            width: 180px;
-            height: 200px;
-            background: linear-gradient(rgba(255,255,255,0.2), transparent); /* Lighter gradient for white background */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1); /* Lighter shadow */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.5s;
-            border-radius: 10px;
-            margin: 0 10px; /* Adjusted margin for better spacing */
-            backdrop-filter: blur(5px); /* Slightly less blur */
-            transform: rotate(calc(var(--r) * 1deg));
-            flex-shrink: 0; /* Prevent shrinking on smaller screens */
-            margin-bottom: 20px; /* Space between rows when wrapping */
-        }
-        @media (max-width: 768px) {
-            .glass {
-                width: 150px; /* Smaller width on mobile */
-                height: 180px; /* Smaller height on mobile */
-                margin: 0 5px;
-            }
-        }
-
-        .glass-container:hover .glass {
-            transform: rotate(0deg);
-            margin: 0 10px;
-        }
-
-        .glass::before {
-            content: attr(data-text);
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.05); /* Darker background for text */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333333; /* Darker text color */
-            font-weight: 600; /* Make text bolder */
-        }
-        .glass .icon {
-            font-size: 3.5em; /* Larger icon size */
-            color: #556B2F; /* New green color for icons */
-        }
-        /* --- End Glass Cards --- */
-        #product-3d-canvas {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            display: block;
-            margin: 0 auto 2rem auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALHAM | Premium Indian Spices - B2B Wholesale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.0.3/src/regular/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <style>
+    body{font-family:'Inter',sans-serif;}
+    h1,h2,h3,h4{font-family:'Playfair Display',serif;}
+  </style>
 </head>
-<body class="bg-white text-[#333]">
+<body class="text-gray-800">
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <img src="logo 2.png" alt="Alham Logo" class="h-10 w-auto">
+      </div>
+      <ul class="hidden md:flex space-x-6 text-sm font-semibold">
+        <li><a href="#home" class="hover:text-amber-700">Home</a></li>
+        <li><a href="#about" class="hover:text-amber-700">About</a></li>
+        <li><a href="#products" class="hover:text-amber-700">Products</a></li>
+        <li><a href="#quality" class="hover:text-amber-700">Quality</a></li>
+        <li><a href="#contact" class="hover:text-amber-700">Contact</a></li>
+      </ul>
+      <button id="mobile-btn" class="md:hidden text-2xl"><i class="ph-list"></i></button>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+      <ul class="flex flex-col text-center space-y-2 py-4">
+        <li><a href="#home" class="block py-2 hover:text-amber-700">Home</a></li>
+        <li><a href="#about" class="block py-2 hover:text-amber-700">About</a></li>
+        <li><a href="#products" class="block py-2 hover:text-amber-700">Products</a></li>
+        <li><a href="#quality" class="block py-2 hover:text-amber-700">Quality</a></li>
+        <li><a href="#contact" class="block py-2 hover:text-amber-700">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <!-- Navbar -->
-    <nav id="navbar" class="navbar p-4 px-12 flex justify-between items-center bg-white z-1000 px-15">
-        <div class="flex items-center">
-            <img
-                src="logo 2.png"
-                alt="Alham Logo"
-                class="h-[70px] w-auto object-contain"
-            />
-            <!-- Removed "ALHAM" text logo -->
+  <!-- Hero -->
+  <section id="home" class="pt-24 pb-32 bg-cover bg-center relative" style="background-image:url('hero 4.png');">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative max-w-4xl mx-auto text-center text-white space-y-6 px-4">
+      <h1 class="text-4xl md:text-6xl font-bold">Alhäm: Your Partner in Premium Wholesale Spices.</h1>
+      <p class="text-lg md:text-xl">Sourcing directly from farmers, we deliver natural, organic, and FSSAI-certified spices with unmatched reliability and quality for hotels, restaurants, retailers, and distributors.</p>
+      <p class="text-amber-300 text-xl font-semibold">Experience the Essence of India</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#contact" class="px-6 py-3 rounded-full bg-amber-700 text-white hover:bg-amber-600 transition">Request a Quote</a>
+        <a href="#recipes" class="px-6 py-3 rounded-full border border-white text-white hover:bg-white hover:text-amber-700 transition">Get Recipe</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quality Features -->
+  <section id="quality" class="py-24 bg-[url('https://www.transparenttextures.com/patterns/papyrus.png')] bg-repeat">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl text-center text-amber-800 mb-12">Why Partner with Alhäm?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-seal-check text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Direct Farm Sourcing</h3>
+          <p>We source directly from trusted farmers, ensuring unparalleled freshness, authenticity, and fair trade practices.</p>
         </div>
-        
-        <ul class="hidden md:flex space-x-6">
-            <li><a href="#home" class="nav-link-underline text-white hover:text-[#8B0000] font-medium uppercase tracking-wide transition-colors duration-300">Home</a></li>
-            <li><a href="#about" class="nav-link-underline text-white hover:text-[#8B0000] font-medium uppercase tracking-wide transition-colors duration-300">About Us</a></li>
-            <li><a href="#products" class="nav-link-underline text-white hover:text-[#8B0000] font-medium uppercase tracking-wide transition-colors duration-300">Products</a></li>
-            <li><a href="#quality" class="nav-link-underline text-white hover:text-[#8B0000] font-medium uppercase tracking-wide transition-colors duration-300">Our Quality</a></li>
-            <li><a href="#contact" class="nav-link-underline text-white hover:text-[#8B0000] font-medium uppercase tracking-wide transition-colors duration-300">Contact</a></li>
-        </ul>
-
-        <div class="md:hidden">
-            <button id="menu-btn" class="hamburger focus:outline-none">
-                <span class="hamburger-top"></span>
-                <span class="hamburger-middle"></span>
-                <span class="hamburger-bottom"></span>
-            </button>
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-certificate text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">FSSAI Certified Excellence</h3>
+          <p>Our commitment to quality is backed by stringent FSSAI certifications, guaranteeing safety and purity.</p>
         </div>
-        <div id="mobile-menu" class="mobile-menu md:hidden text-white shadow-lg">
-            <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Home</a>
-            <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">About Us</a>
-            <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Products</a>
-            <a href="#quality" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Our Quality</a>
-            <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Contact</a>
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-leaf text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Natural & Organic Integrity</h3>
+          <p>Experience the true essence of spices, free from artificial additives, embracing their natural flavor and aroma.</p>
         </div>
-    </nav>
-
-
-    <section id="home" class="relative flex items-center sm:px-6 lg:px-8 overflow-hidden h-screen hero-section-height">
-        <!-- Image background for hero section -->
-        <img src="hero 4.png" alt="Spices background" class="hero-image-background">
-        <!-- Overlay for darkening the image and improving text contrast -->
-        <div class="absolute inset-0 bg-black opacity-40 z-10"></div> <!-- Added dark overlay -->
-
-        <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-0"></canvas>
-        <div class="container mx-auto flex flex-col items-center justify-center h-full z-10">
-            <!-- Added mt-16 to shift content down from top, on top of existing pt-16 (padding-top) -->
-            <div class="w-full lg:w-1/2 text-center p-6 lg:p-12 mb-0 rounded-xl shadow-lg mt-[9rem]">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-[#B8860B] mb-6 font-elegant-serif">
-                    <span id="heading-ref-1" class="block">Alhäm: Your Partner in</span>
-                    <span id="heading-ref-2" class="block mt-2">Premium Wholesale Spices.</span>
-                </h1>
-                <p id="text-ref" class="text-lg sm:text-xl text-white mb-8 max-w-lg mx-auto">
-                    Sourcing directly from farmers, we deliver natural, organic, and FSSAI-certified spices with unmatched reliability and quality for hotels, restaurants, retailers, and distributors.
-                </p>
-                <div id="framer-tagline" class="mt-4"></div>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <!-- Updated "Request a Quote" button -->
-                    <button class="cta-quote" onclick="location.href='#contact'">
-                        <span class="hover-underline-animation-quote"> Request a Quote </span>
-                        <svg
-                            id="arrow-horizontal"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="30"
-                            height="10"
-                            viewBox="0 0 46 16"
-                        >
-                            <path
-                                id="Path_10"
-                                data-name="Path 10"
-                                d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
-                                transform="translate(30)"
-                            ></path>
-                        </svg>
-                    </button>
-                    <!-- Updated "Get an Alhäm Recipe" button -->
-                    <button class="cta-recipe" onclick="location.href='#recipes'">
-                        <span class="span">Get Recipe</span>
-                        <span class="second second-svg-container">
-                            <svg
-                                width="50px"
-                                height="20px"
-                                viewBox="0 0 66 43"
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                            >
-                                <g
-                                    id="arrow"
-                                    stroke="none"
-                                    stroke-width="1"
-                                    fill="none"
-                                    fill-rule="evenodd"
-                                >
-                                    <path
-                                        class="one"
-                                        d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z"
-                                        fill="#FFFFFF"
-                                    ></path>
-                                    <path
-                                        class="two"
-                                        d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z"
-                                        fill="#FFFFFF"
-                                    ></path>
-                                    <path
-                                        class="three"
-                                        d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z"
-                                        fill="#FFFFFF"
-                                    ></path>
-                                </g>
-                            </svg>
-                        </span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="hidden lg:block lg:w-1/2 h-full">
-                </div>
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-handshake text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Unwavering Reliability</h3>
+          <p>Count on consistent supply and timely delivery, ensuring your business operations run smoothly.</p>
         </div>
-    </section>
-
-    <section id="quality" class="py-28 px-6 bg-white relative overflow-hidden">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 font-elegant-serif text-[#8B0000]">Why Partner with Alhäm?</h2>
-                <div class="w-24 h-1 bg-[#556B2F] mx-auto"></div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-leaf text-5xl text-[#556B2F] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">Direct Farm Sourcing</h3>
-                    <p class="text-gray-600">We source directly from trusted farmers, ensuring unparalleled freshness, authenticity, and fair trade practices.</p>
-                </div>
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-award text-5xl text-[#8B0000] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">FSSAI Certified Excellence</h3>
-                    <p class="text-gray-600">Our commitment to quality is backed by stringent FSSAI certifications, guaranteeing safety and purity.</p>
-                </div>
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-seedling text-5xl text-[#556B2F] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">Natural & Organic Integrity</h3>
-                    <p class="text-gray-600">Experience the true essence of spices, free from artificial additives, embracing their natural flavor and aroma.</p>
-                </div>
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-handshake text-5xl text-blue-600 mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">Unwavering Reliability</h3>
-                    <p class="text-gray-600">Count on consistent supply and timely delivery, ensuring your business operations run smoothly.</p>
-                </div>
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-flask text-5xl text-purple-600 mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">Cutting-Edge Quality</h3>
-                    <p class="text-gray-600">We blend traditional methods with modern quality control for superior aroma, flavor, and purity.</p>
-                </div>
-                <div class="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow-md fade-in-section card">
-                    <i class="fas fa-boxes text-5xl text-gray-700 mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-3 font-elegant-serif text-gray-800">Tailored Bulk Solutions</h3>
-                    <p class="text-gray-600">Flexible packaging and quantity options to meet the unique demands of hotels, restaurants, and distributors.</p>
-                </div>
-            </div>
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-flask text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Cutting-Edge Quality</h3>
+          <p>We blend traditional methods with modern quality control for superior aroma, flavor, and purity.</p>
         </div>
-    </section>
-
-    <section id="about" class="py-28 px-6 bg-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/rice-paper.png')] opacity-20"></div>
-        <div class="spice-particles absolute inset-0 opacity-10 pointer-events-none">
-            <div class="particle absolute text-4xl" style="top:20%; left:10%;">🌿</div>
-            <div class="particle absolute text-5xl" style="top:30%; left:80%;">🌶️</div>
-            <div class="particle absolute text-3xl" style="top:50%; left:30%;">🧄</div>
-            <div class="particle absolute text-6xl" style="top:70%; left:60%;">🧅</div>
-            <div class="particle absolute text-2xl" style="top:10%; left:50%;">🌾</div>
+        <div class="p-6 bg-white shadow rounded-lg" data-sr>
+          <i class="ph-box text-4xl text-amber-700 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-2">Tailored Bulk Solutions</h3>
+          <p>Flexible packaging and quantity options to meet the unique demands of hotels, restaurants, and distributors.</p>
         </div>
-        <div class="container mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="text-center md:text-left">
-                    <h2 class="text-5xl md:text-6xl lg:text-7xl font-bold text-[#8B0000] leading-tight mb-4 about-heading-animated">
-                        <span class="block about-text-line">Our Story:</span>
-                        <span class="block about-text-line">Tradition, Quality,</span>
-                        <span class="block about-text-line">Alhäm.</span>
-                    </h2>
-                    <div class="w-20 h-1 bg-[#556B2F] mx-auto md:mx-0"></div>
-                </div>
+      </div>
+    </div>
+  </section>
 
-                <div class="text-center md:text-left">
-                    <p class="text-lg md:text-xl leading-relaxed mb-8 text-[#556B2F] fade-in-section">
-                        At Alhäm, we are dedicated to offering spices of the highest quality, ensuring the pure and traditional taste of Indian cuisine in every product. Our spices are sourced directly from small farms across India, where generations of farmers have perfected the art of cultivation. We proudly supply hotels, restaurants, retailers, and distributors with the finest ingredients.
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed text-[#556B2F] fade-in-section">
-                        Each batch undergoes rigorous quality control, blending traditional methods with cutting-edge techniques to preserve its natural aroma and flavor. We believe in sustainable practices that respect both the land and the people who work it, bringing you spices that are as ethical as they are delicious, all backed by our FSSAI license.
-                    </p>
-                </div>
-            </div>
+  <!-- About -->
+  <section id="about" class="py-24 bg-white relative">
+    <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]"></div>
+    <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-4xl md:text-5xl text-amber-800 mb-6">Our Story: Tradition, Quality, Alhäm.</h2>
+      </div>
+      <div class="space-y-6 text-gray-700">
+        <p>At Alhäm, we are dedicated to offering spices of the highest quality, ensuring the pure and traditional taste of Indian cuisine in every product. Our spices are sourced directly from small farms across India, where generations of farmers have perfected the art of cultivation. We proudly supply hotels, restaurants, retailers, and distributors with the finest ingredients.</p>
+        <p>Each batch undergoes rigorous quality control, blending traditional methods with cutting-edge techniques to preserve its natural aroma and flavor. We believe in sustainable practices that respect both the land and the people who work it, bringing you spices that are as ethical as they are delicious, all backed by our FSSAI license.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section id="products" class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl text-center text-amber-800 mb-12">Our Premium Selection for Wholesale</h2>
+      <p class="max-w-2xl mx-auto text-center mb-12">Handpicked spices sourced directly from India's finest farms, tailored for your business needs.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="cardammom.png" alt="Cardamom" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Cardamom</h3>
+          <p class="text-sm mb-2">Various grades: 8.5 MM, 8+ MM, 7.5 Bolt, etc.</p>
+          <p class="text-sm text-gray-600 mb-4">Known as the "Queen of Spices", our cardamom pods are hand-picked at peak ripeness for maximum flavor and aroma, perfect for large-scale culinary needs.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
         </div>
-    </section>
-
-    <section id="products" class="py-24 px-6 bg-white">
-        <div class="container mx-auto max-w-7xl">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 font-elegant-serif text-[#8B0000]">Our Premium Selection for Wholesale</h2>
-                <div class="w-24 h-1 bg-[#556B2F] mx-auto"></div>
-                <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">Handpicked spices sourced directly from India's finest farms, tailored for your business needs.</p>
-            </div>
-            
-            <!-- New Top 3 Products Section -->
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-bold mb-8 font-elegant-serif text-gray-800">Top 3 Spices</h3>
-                <div class="glass-container fade-in-section">
-                    <div data-text="Cardamom" style="--r:-15;" class="glass">
-                        <i class="icon fas fa-seedling"></i> <!-- Seedling icon for cardamom -->
-                    </div>
-                    <div data-text="Cinnamon" style="--r:5;" class="glass">
-                        <i class="icon fas fa-ruler-horizontal"></i> <!-- Ruler-horizontal for stick-like cinnamon -->
-                    </div>
-                    <div data-text="Black Pepper" style="--r:25;" class="glass">
-                        <i class="icon fas fa-circle text-black"></i> <!-- Simple circle for peppercorn -->
-                    </div>
-                </div>
-            </div>
-            <!-- End New Top 3 Products Section -->
-
-            <!-- Interactive 3D Showcase -->
-            <div class="fade-in-section">
-                <canvas id="product-3d-canvas"></canvas>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product Card 1: Cardamom -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="cardammom.png" alt="Cardamom">
-                    </div>
-                    <div class="card-title">Cardamom</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">Various grades: 8.5 MM, 8+ MM, 7.5 Bolt, etc.</span>
-                        <span class="block text-gray-600 mt-2">Known as the "Queen of Spices", our cardamom pods are hand-picked at peak ripeness for maximum flavor and aroma, perfect for large-scale culinary needs.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 2: Cinnamon -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="cinnamon.jpeg" alt="Cinnamon">
-                    </div>
-                    <div class="card-title">Cinnamon</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">Cinnamon Roll, Cinnamon Split from Kerala.</span>
-                        <span class="block text-gray-600 mt-2">Our cinnamon sticks are harvested from the inner bark of trees grown in the lush forests of Kerala. Perfect for curries, desserts, and large-batch beverages.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 3: Black Pepper -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="pepper.jpeg" alt="Black Pepper">
-                    </div>
-                    <div class="card-title">Black Pepper</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">Bulk, 8 MM, 9-11 MM, Uncleaned variants.</span>
-                        <span class="block text-gray-600 mt-2">Known as the "King of Spices", our peppercorns are sun-dried to perfection. Essential for seasoning almost any dish.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 4: Cloves -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="cloves.png" alt="Cloves">
-                    </div>
-                    <div class="card-title">Cloves</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">Premium quality Kerala Cloves.</span>
-                        <span class="block text-gray-600 mt-2">Our cloves are hand-picked for their rich aroma and strong, sweet flavor. Excellent for adding depth to large-batch dishes.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-
-                <!-- Product Card 5: Nutmeg -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="https://via.placeholder.com/600x400/8B0000/FFFFFF?text=Nutmeg" alt="Nutmeg">
-                    </div>
-                    <div class="card-title">Nutmeg</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">With and without shell options.</span>
-                        <span class="block text-gray-600 mt-2">Our premium nutmeg offers a warm, sweet, and aromatic flavor, ideal for both sweet and savory bulk applications.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-                 
-                <!-- Product Card 6: Star Anise -->
-                <div class="card">
-                    <div class="card-img">
-                        <img src="https://via.placeholder.com/600x400/556B2F/FFFFFF?text=Star+Anise" alt="Star Anise">
-                    </div>
-                    <div class="card-title">Star Anise</div>
-                    <div class="card-subtitle">
-                        <span class="block font-medium text-[#B8860B]">Premium whole star anise.</span>
-                        <span class="block text-gray-600 mt-2">Distinctive and aromatic, our star anise brings a unique licorice-like flavor, perfect for Asian cuisine and spice blends.</span>
-                    </div>
-                    <hr class="card-divider">
-                    <div class="card-footer">
-                        <div class="card-price"><span>Price:</span> Upon Inquiry</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-12 fade-in-section">
-                <a href="#contact" class="inline-block bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
-                    View Full Wholesale Catalog / Request Custom Quote
-                </a>
-            </div>
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="cinnamon.jpeg" alt="Cinnamon" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Cinnamon</h3>
+          <p class="text-sm mb-2">Cinnamon Roll, Cinnamon Split from Kerala.</p>
+          <p class="text-sm text-gray-600 mb-4">Our cinnamon sticks are harvested from the inner bark of trees grown in the lush forests of Kerala. Perfect for curries, desserts, and large-batch beverages.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
         </div>
-    </section>
-
-    <section id="recipes" class="py-24 px-6 bg-white">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-section font-elegant-serif text-[#8B0000]">Unlock Culinary Secrets with Alhäm Recipes</h2>
-                <div class="w-20 h-1 bg-[#556B2F] mx-auto"></div>
-                <p class="mt-4 text-lg text-gray-700">Inspire your menu with unique recipes featuring Alhäm's premium spices.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-                <!-- Blog Card 1: Biryani Recipe -->
-                <div class="blog-card fade-in-section">
-                    <div class="content">
-                        <div class="back">
-                            <div class="back-content">
-                                <svg stroke="#8B0000" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="50px" width="50px" fill="#8B0000">
-                                    <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-                                    <g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <path d="M20.84375 0.03125C20.191406 0.0703125 19.652344 0.425781 19.21875 1.53125C18.988281 2.117188 18.5 3.558594 18.03125 4.9375C17.792969 5.636719 17.570313 6.273438 17.40625 6.75C17.390625 6.796875 17.414063 6.855469 17.40625 6.90625C17.398438 6.925781 17.351563 6.949219 17.34375 6.96875L17.25 7.25C18.566406 7.65625 19.539063 8.058594 19.625 8.09375C22.597656 9.21875 28.351563 11.847656 33.28125 16.78125C38.5 22 41.183594 28.265625 42.09375 30.71875C42.113281 30.761719 42.375 31.535156 42.75 32.84375C42.757813 32.839844 42.777344 32.847656 42.78125 32.84375C43.34375 32.664063 44.953125 32.09375 46.3125 31.625C47.109375 31.351563 47.808594 31.117188 48.15625 31C49.003906 30.714844 49.542969 30.292969 49.8125 29.6875C50.074219 29.109375 50.066406 28.429688 49.75 27.6875C49.605469 27.347656 49.441406 26.917969 49.25 26.4375C47.878906 23.007813 45.007813 15.882813 39.59375 10.46875C33.613281 4.484375 25.792969 1.210938 22.125 0.21875C21.648438 0.0898438 21.234375 0.0078125 20.84375 0.03125 Z M 16.46875 9.09375L0.0625 48.625C-0.09375 48.996094 -0.00390625 49.433594 0.28125 49.71875C0.472656 49.910156 0.738281 50 1 50C1.128906 50 1.253906 49.988281 1.375 49.9375L40.90625 33.59375C40.523438 32.242188 40.222656 31.449219 40.21875 31.4375C39.351563 29.089844 36.816406 23.128906 31.875 18.1875C27.035156 13.34375 21.167969 10.804688 18.875 9.9375C18.84375 9.925781 17.8125 9.5 16.46875 9.09375 Z M 17 16C19.761719 16 22 18.238281 22 21C22 23.761719 19.761719 26 17 26C15.140625 26 13.550781 24.972656 12.6875 23.46875L15.6875 16.1875C16.101563 16.074219 16.550781 16 17 16 Z M 31 22C32.65625 22 34 23.34375 34 25C34 25.917969 33.585938 26.730469 32.9375 27.28125L32.90625 27.28125C33.570313 27.996094 34 28.949219 34 30C34 32.210938 32.210938 34 30 34C27.789063 34 26 32.210938 26 30C26 28.359375 26.996094 26.960938 28.40625 26.34375L28.3125 26.3125C28.117188 25.917969 28 25.472656 28 25C28 23.34375 29.34375 22 31 22 Z M 21 32C23.210938 32 25 33.789063 25 36C25 36.855469 24.710938 37.660156 24.25 38.3125L20.3125 39.9375C18.429688 39.609375 17 37.976563 17 36C17 33.789063 18.789063 32 21 32 Z M 9 34C10.65625 34 12 35.34375 12 37C12 38.65625 10.65625 40 9 40C7.902344 40 6.960938 39.414063 6.4375 38.53125L8.25 34.09375C8.488281 34.03125 8.742188 34 9 34Z"></path>
-                                    </g>
-                                </svg>
-                                <strong>View Recipe</strong>
-                            </div>
-                        </div>
-                        <div class="front">
-                            <div class="img">
-                                <img src="https://via.placeholder.com/600x400/8B0000/FFFFFF?text=Dessert+Recipe" alt="Dessert Recipe">
-                                <div class="circle"></div>
-                                <div class="circle" id="right"></div>
-                                <div class="circle" id="bottom"></div>
-                            </div>
-                            <div class="front-content">
-                                <small class="badge">Sweet Treats</small>
-                                <div class="description">
-                                    <div class="title">
-                                        <p class="title">
-                                            <strong>Cardamom Infused Desserts for a Unique Touch</strong>
-                                        </p>
-                                        <svg fill-rule="nonzero" height="15px" width="15px" viewBox="0,0,256,256" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g style="mix-blend-mode: normal" text-anchor="none" font-size="none" font-weight="none" font-family="none" stroke-dashoffset="0" stroke-dasharray="" stroke-miterlimit="10" stroke-linejoin="miter" stroke-linecap="butt" stroke-width="1" stroke="none" fill-rule="nonzero" fill="#20c997"><g transform="scale(8,8)"><path d="M25,27l-9,-6.75l-9,6.75v-23h18z"></path></g></g></svg>
-                                    </div>
-                                    <p class="card-footer">
-                                        Time: ~50 Mins &nbsp; | &nbsp; Servings: 6
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-12 fade-in-section">
-                <a href="#" class="inline-block bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
-                    View All Recipes
-                </a>
-            </div>
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="pepper.jpeg" alt="Black Pepper" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Black Pepper</h3>
+          <p class="text-sm mb-2">Bulk, 8 MM, 9-11 MM, Uncleaned variants.</p>
+          <p class="text-sm text-gray-600 mb-4">Known as the "King of Spices", our peppercorns are sun-dried to perfection. Essential for seasoning almost any dish.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
         </div>
-    </section>
-
-    <section id="contact" class="py-24 px-6 bg-white">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-section font-elegant-serif text-[#8B0000]">Partner with Alhäm: Request a Quote</h2>
-                <div class="w-20 h-1 bg-[#556B2F] mx-auto"></div>
-                <p class="mt-4 text-lg text-gray-700">Tell us your wholesale spice needs, and our team will get back to you with competitive pricing and tailored solutions.</p>
-            </div>
-            
-            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 fade-in-section">
-                <div>
-                    <h3 class="text-xl font-bold mb-4 text-gray-800">Get in Touch Directly</h3>
-                    <p class="mb-6 text-gray-700">Whether for bulk orders, custom blends, or partnership inquiries, we're ready to assist your business.</p>
-                    
-                    <div class="space-y-4 text-gray-700">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <i class="fas fa-map-marker-alt text-[#B8860B]"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="font-medium text-gray-800">Address</h4>
-                                <p class="text-gray-700">123 Spice Lane, Mumbai, India 400001</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <i class="fas fa-phone-alt text-[#B8860B]"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="font-medium text-gray-800">Phone</h4>
-                                <p class="text-gray-700">+91 98765 43210</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <i class="fas fa-envelope text-[#B8860B]"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="font-medium text-gray-800">Email</h4>
-                                <p class="text-gray-700">contact@alhamspices.com</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8">
-                        <h4 class="font-medium mb-4 text-gray-800">Follow Us for Updates</h4>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-[#B8860B] hover:text-[#9A7008] text-xl">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="text-[#B8860B] hover:text-[#9A7008]">
-                                <i class="fab fa-facebook text-xl"></i>
-                            </a>
-                            <a href="#" class="text-[#B8860B] hover:text-[#9A7008]">
-                                <i class="fab fa-twitter text-xl"></i>
-                            </a>
-                            <a href="#" class="hover:text-[#B8860B]">
-                                <i class="fab fa-pinterest text-xl"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-8 rounded-xl shadow-xl border border-[#B8860B]/20">
-                    <form class="space-y-4">
-                        <div>
-                            <label for="contact-name" class="block font-medium mb-1 text-gray-700">Your Name</label>
-                            <input type="text" id="contact-name" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="John Doe">
-                        </div>
-                        
-                        <div>
-                            <label for="contact-business" class="block font-medium mb-1 text-gray-700">Business Name</label>
-                            <input type="text" id="contact-business" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="Hotel Spice Inn">
-                        </div>
-
-                        <div>
-                            <label for="contact-email" class="block font-medium mb-1 text-gray-700">Business Email</label>
-                            <input type="email" id="contact-email" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="info@hotelspiceinn.com">
-                        </div>
-
-                        <div>
-                            <label for="contact-phone" class="block font-medium mb-1 text-gray-700">Phone Number (Optional)</label>
-                            <input type="tel" id="contact-phone" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="+91 XXXXXXXXXX">
-                        </div>
-                        
-                        <div>
-                            <label for="contact-products" class="block font-medium mb-1 text-gray-700">Products of Interest (e.g., Cardamom 8.5 MM, Black Pepper Bulk)</label>
-                            <input type="text" id="contact-products" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="Cardamom, Black Pepper, Cinnamon">
-                        </div>
-
-                        <div>
-                            <label for="contact-message" class="block font-medium mb-1 text-gray-700">Your Inquiry (e.g., specific quantities, custom blends, delivery schedule)</label>
-                            <textarea id="contact-message" rows="4" class="w-full px-4 py-2 rounded border border-[#B8860B]/50 focus:outline-none focus:ring-2 focus:ring-[#B8860B]" placeholder="Looking for 500kg of Cardamom 8+ MM delivered monthly."></textarea>
-                        </div>
-                        
-                        <button type="submit" class="bg-[#8B0000] hover:bg-[#6B0000] text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg">
-                            Submit Request
-                        </button>
-                    </form>
-                </div>
-            </div>
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="cloves.png" alt="Cloves" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Cloves</h3>
+          <p class="text-sm mb-2">Premium quality Kerala Cloves.</p>
+          <p class="text-sm text-gray-600 mb-4">Our cloves are hand-picked for their rich aroma and strong, sweet flavor. Excellent for adding depth to large-batch dishes.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
         </div>
-    </section>
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="https://via.placeholder.com/600x400/8B0000/FFFFFF?text=Nutmeg" alt="Nutmeg" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Nutmeg</h3>
+          <p class="text-sm mb-2">With and without shell options.</p>
+          <p class="text-sm text-gray-600 mb-4">Our premium nutmeg offers a warm, sweet, and aromatic flavor, ideal for both sweet and savory bulk applications.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
+        </div>
+        <div class="bg-white rounded-lg shadow hover:shadow-lg p-6" data-sr>
+          <img src="https://via.placeholder.com/600x400/556B2F/FFFFFF?text=Star+Anise" alt="Star Anise" class="h-32 w-full object-contain mb-4">
+          <h3 class="font-semibold text-lg mb-2">Star Anise</h3>
+          <p class="text-sm mb-2">Premium whole star anise.</p>
+          <p class="text-sm text-gray-600 mb-4">Distinctive and aromatic, our star anise brings a unique licorice-like flavor, perfect for Asian cuisine and spice blends.</p>
+          <p class="font-semibold">Price: <span class="font-normal">Upon Inquiry</span></p>
+        </div>
+      </div>
+      <div class="text-center mt-12" data-sr>
+        <a href="#contact" class="px-8 py-3 rounded-full bg-amber-700 text-white hover:bg-amber-600 transition inline-block">View Full Wholesale Catalog / Request Custom Quote</a>
+      </div>
+    </div>
+  </section>
 
-    <footer class="bg-[#8B0000] text-white py-16 px-6">
-        <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0 text-center md:text-left">
-                    <a href="#home" class="text-3xl font-bold font-elegant-serif text-white tracking-wide">ALHAM</a>
-                    <p class="mt-3 text-amber-100">Premium Indian Spices for Wholesale</p>
-                </div>
-                
-                <div class="flex space-x-6 mb-6 md:mb-0">
-                    <a href="#" class="hover:text-[#B8860B]">
-                        <i class="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a href="#" class="hover:text-[#B8860B]">
-                        <i class="fab fa-facebook text-xl"></i>
-                    </a>
-                    <a href="#" class="hover:text-[#B8860B]">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                            <a href="#" class="hover:text-[#B8860B]">
-                                <i class="fab fa-pinterest text-xl"></i>
-                            </a>
-                        </div>
-                    </div>
-                
-                    <div class="text-center md:text-right">
-                        <p>&copy; 2025 ALHAM Spices. All rights reserved.</p>
-                        <p class="mt-1">FSSAI Certified. Crafted with Excellence in India.</p>
-                    </div>
-                </div>
-            </footer>
-        
-            <script>
-                // GSAP Plugins Registration (if needed, e.g., ScrollTrigger)
-                gsap.registerPlugin(ScrollTrigger);
-        
-                // Initialize Lenis Smooth Scrolling
-                const lenis = new Lenis({
-                    duration: 1.2,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // More natural ease
-                    direction: 'vertical',
-                    gestureDirection: 'vertical',
-                    smooth: true,
-                    mouseMultiplier: 1,
-                    smoothTouch: false,
-                    touchMultiplier: 2,
-                    infinite: false,
-                });
-        
-                // Register ScrollTrigger with Lenis
-                lenis.on('scroll', ScrollTrigger.update);
-        
-                gsap.ticker.add((time)=>{
-                    lenis.raf(time * 1000)
-                });
-        
-                gsap.ticker.lagSmoothing(0);
-        
-                // Navbar scroll effect
-                const navbar = document.getElementById('navbar');
-                const heroSection = document.getElementById('home');
-                let heroSectionHeight = heroSection.offsetHeight; 
-        
-                // Update heroSectionHeight on window resize
-                window.addEventListener('resize', () => {
-                    heroSectionHeight = heroSection.offsetHeight;
-                    // Also trigger scroll event on resize to adjust navbar immediately
-                    window.dispatchEvent(new Event('scroll')); 
-                });
-        
-                window.addEventListener('scroll', () => {
-                    // Adjust threshold: navbar appears scrolled when past half of the hero section
-                    if (window.scrollY > heroSectionHeight / 2) { 
-                        navbar.classList.add('scrolled');
-                        // Change navbar link colors to dark when scrolled
-                        document.querySelectorAll('#navbar ul li a').forEach(link => {
-                            link.classList.remove('text-white');
-                            link.classList.add('text-gray-800');
-                        });
-                    } else {
-                        navbar.classList.remove('scrolled');
-                        // Change navbar link colors to white when not scrolled (on hero)
-                        document.querySelectorAll('#navbar ul li a').forEach(link => {
-                            link.classList.remove('text-gray-800');
-                            link.classList.add('text-white');
-                        });
-                    }
-                });
-        
-                // Initial check for scroll position on page load
-                window.dispatchEvent(new Event('scroll'));
-        
-        
-                // GSAP Load-in Animation for Hero Text
-                document.addEventListener('DOMContentLoaded', () => {
-                    const headingRef1 = document.getElementById('heading-ref-1');
-                    const headingRef2 = document.getElementById('heading-ref-2');
-                    const textRef = document.getElementById('text-ref');
-                    const buttonsRef = document.querySelectorAll('#home .flex.flex-col button'); // Select all buttons within the container
-        
-                    if (window.gsap) {
-                        gsap.set([headingRef1, headingRef2, textRef, buttonsRef], { y: 50, opacity: 0 });
-        
-                        const heroLoadInTl = gsap.timeline({ delay: 0.5 });
-        
-                        heroLoadInTl.to(headingRef1, {
-                            y: 0,
-                            opacity: 1,
-                            duration: 1.2,
-                            ease: "power3.out"
-                        });
-        
-                        heroLoadInTl.to(headingRef2, {
-                            y: 0,
-                            opacity: 1,
-                            duration: 1.2,
-                            delay: -1.0,
-                            ease: "power3.out"
-                        });
-        
-                        heroLoadInTl.to(textRef, {
-                            opacity: 1,
-                            y: 0,
-                            duration: 1,
-                            delay: -0.6,
-                            ease: "power2.out"
-                        });
-        
-                        heroLoadInTl.to(buttonsRef, {
-                            y: 0,
-                            opacity: 1,
-                            duration: 0.8,
-                            stagger: 0.2,
-                            delay: -0.4,
-                            ease: "back.out(1.7)"
-                        });
-                    } else {
-                        console.error("GSAP not loaded.");
-                    }
-                    initFramerTagline();
-                    initThreeHero();
-                    initProduct3D();
-                });
+  <!-- Recipes -->
+  <section id="recipes" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl text-center text-amber-800 mb-12">Unlock Culinary Secrets with Alhäm Recipes</h2>
+      <div class="grid justify-center">
+        <div class="bg-gray-50 rounded-lg shadow p-6 max-w-md" data-sr>
+          <img src="https://via.placeholder.com/600x400/8B0000/FFFFFF?text=Dessert+Recipe" alt="Dessert Recipe" class="mb-4 w-full h-48 object-cover rounded">
+          <span class="inline-block bg-amber-700 text-white text-xs px-3 py-1 rounded-full mb-2">Sweet Treats</span>
+          <h3 class="text-lg font-semibold mb-2">Cardamom Infused Desserts for a Unique Touch</h3>
+          <p class="text-sm text-gray-600 mb-4">Time: ~50 Mins | Servings: 6</p>
+          <a href="#" class="text-amber-700 font-semibold hover:underline">View Recipe</a>
+        </div>
+      </div>
+      <div class="text-center mt-12" data-sr>
+        <a href="#" class="px-8 py-3 rounded-full bg-amber-700 text-white hover:bg-amber-600 transition inline-block">View All Recipes</a>
+      </div>
+    </div>
+  </section>
 
+  <!-- Contact / Lead Form -->
+  <section id="contact" class="py-24 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl text-center text-amber-800 mb-12">Partner with Alhäm: Request a Quote</h2>
+      <p class="max-w-2xl mx-auto text-center mb-12 text-gray-700">Tell us your wholesale spice needs, and our team will get back to you with competitive pricing and tailored solutions.</p>
+      <div class="grid md:grid-cols-2 gap-12 items-start">
+        <div class="space-y-6" data-sr>
+          <h3 class="text-xl font-semibold">Get in Touch Directly</h3>
+          <p>Whether for bulk orders, custom blends, or partnership inquiries, we're ready to assist your business.</p>
+          <div class="space-y-4 text-sm">
+            <div class="flex items-start space-x-3">
+              <i class="ph-map-pin text-amber-700 text-xl"></i>
+              <div>
+                <h4 class="font-medium">Address</h4>
+                <p>123 Spice Lane, Mumbai, India 400001</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="ph-phone text-amber-700 text-xl"></i>
+              <div>
+                <h4 class="font-medium">Phone</h4>
+                <p>+91 98765 43210</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="ph-envelope text-amber-700 text-xl"></i>
+              <div>
+                <h4 class="font-medium">Email</h4>
+                <p>contact@alhamspices.com</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex space-x-4 text-xl mt-6">
+            <a href="#" class="text-amber-700 hover:text-amber-600"><i class="ph-instagram-logo"></i></a>
+            <a href="#" class="text-amber-700 hover:text-amber-600"><i class="ph-facebook-logo"></i></a>
+            <a href="#" class="text-amber-700 hover:text-amber-600"><i class="ph-twitter-logo"></i></a>
+            <a href="#" class="text-amber-700 hover:text-amber-600"><i class="ph-pinterest-logo"></i></a>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-lg shadow" data-sr>
+          <form class="space-y-4">
+            <div>
+              <label for="contact-name" class="block text-sm font-medium mb-1">Your Name</label>
+              <input type="text" id="contact-name" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="John Doe">
+            </div>
+            <div>
+              <label for="contact-business" class="block text-sm font-medium mb-1">Business Name</label>
+              <input type="text" id="contact-business" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="Hotel">
+            </div>
+            <div>
+              <label for="contact-email" class="block text-sm font-medium mb-1">Business Email</label>
+              <input type="email" id="contact-email" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="info@hotel.com">
+            </div>
+            <div>
+              <label for="contact-phone" class="block text-sm font-medium mb-1">Phone Number (Optional)</label>
+              <input type="tel" id="contact-phone" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="+91 XXXXX XXXXX">
+            </div>
+            <div>
+              <label for="contact-products" class="block text-sm font-medium mb-1">Products of Interest (e.g., Cardamom 8.5 MM, Black Pepper Bulk)</label>
+              <input type="text" id="contact-products" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="Cardamom, Black Pepper, Cinnamon">
+            </div>
+            <div>
+              <label for="contact-message" class="block text-sm font-medium mb-1">Your Inquiry (e.g., specific quantities, custom blends, delivery schedule)</label>
+              <textarea id="contact-message" rows="4" class="w-full border border-gray-300 px-4 py-2 rounded focus:ring-amber-700 focus:border-amber-700" placeholder="Looking for..."></textarea>
+            </div>
+            <button type="submit" class="w-full px-6 py-3 rounded-full bg-amber-700 text-white hover:bg-amber-600 transition">Submit Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                function initFramerTagline() {
-                    const container = document.getElementById('framer-tagline');
-                    const fm = window.framerMotion || window['framer-motion'];
-                    if (container && fm && window.React && window.ReactDOM) {
-                        const { motion } = fm;
-                        const Tagline = () => React.createElement(
-                            motion.div,
-                            { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 1 } },
-                            React.createElement('p', { className: 'text-xl sm:text-2xl text-[#B8860B] font-semibold' }, 'Experience the Essence of India')
-                        );
-                        ReactDOM.render(React.createElement(Tagline), container);
-                    }
-                }
+  <footer class="bg-amber-800 text-white py-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+      <div class="text-center md:text-left">
+        <p class="font-playfair text-2xl font-bold">ALHAM</p>
+        <p class="text-sm text-amber-200">Premium Indian Spices for Wholesale</p>
+      </div>
+      <div class="text-center md:text-right text-sm">
+        <p>&copy; 2025 ALHAM Spices. All rights reserved.</p>
+        <p class="mt-1">FSSAI Certified. Crafted with Excellence in India.</p>
+      </div>
+    </div>
+  </footer>
 
-                function initThreeHero() {
-                    const canvas = document.getElementById('hero-canvas');
-                    if (!canvas || !window.THREE) return;
-                    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-                    renderer.setPixelRatio(window.devicePixelRatio);
-                    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                    const scene = new THREE.Scene();
-                    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 1, 1000);
-                    camera.position.z = 200;
-                    const vertices = [];
-                    for (let i = 0; i < 500; i++) {
-                        vertices.push((Math.random() - 0.5) * 500);
-                        vertices.push((Math.random() - 0.5) * 500);
-                        vertices.push((Math.random() - 0.5) * 500);
-                    }
-                    const geometry = new THREE.BufferGeometry();
-                    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-                    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
-                    const stars = new THREE.Points(geometry, material);
-                    scene.add(stars);
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        stars.rotation.x += 0.0005;
-                        stars.rotation.y += 0.0005;
-                        renderer.render(scene, camera);
-                    }
-                    animate();
-                    window.addEventListener('resize', () => {
-                        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                        camera.updateProjectionMatrix();
-                        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                    });
-                }
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
 
-                function initProduct3D() {
-                    const canvas = document.getElementById('product-3d-canvas');
-                    if (!canvas || !window.THREE) return;
-                    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-                    renderer.setPixelRatio(window.devicePixelRatio);
-                    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
-                    const scene = new THREE.Scene();
-                    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-                    camera.position.set(0, 1.5, 3);
-
-                    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
-                    scene.add(light);
-
-                    const geometry = new THREE.CylinderGeometry(0.7, 0.8, 2, 32);
-                    const material = new THREE.MeshStandardMaterial({ color: 0xB8860B });
-                    const jar = new THREE.Mesh(geometry, material);
-                    scene.add(jar);
-
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        jar.rotation.y += 0.01;
-                        renderer.render(scene, camera);
-                    }
-                    animate();
-
-                    window.addEventListener('resize', () => {
-                        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                        camera.updateProjectionMatrix();
-                        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                    });
-                }
-        
-                // About Us Section Spice Particles Parallax
-                gsap.utils.toArray(".spice-particles .particle").forEach((particle, i) => {
-                    gsap.to(particle, {
-                        y: (i + 1) * 30,
-                        x: i % 2 === 0 ? 20 : -20,
-                        rotation: (i + 1) * 10,
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: "#about",
-                            start: "top bottom",
-                            end: "bottom top",
-                            scrub: true
-                        }
-                    });
-                });
-                
-                // GSAP for About Us Heading Animation
-                gsap.utils.toArray(".about-text-line").forEach(line => {
-                    gsap.from(line, {
-                        yPercent: 100,
-                        opacity: 0,
-                        duration: 1.2,
-                        ease: "power4.out",
-                        stagger: 0.1,
-                        scrollTrigger: {
-                            trigger: line,
-                            start: "top 85%",
-                            end: "bottom top",
-                            toggleActions: "play none none none",
-                            once: true,
-                        }
-                    });
-                });
-        
-                // General fade-in for other sections and cards
-                gsap.utils.toArray(".fade-in-section, .card, .blog-card, .glass").forEach((element) => { /* Added .blog-card here */
-                    gsap.from(element, {
-                        y: 50,
-                        opacity: 0,
-                        duration: 0.8,
-                        ease: "power2.out",
-                        scrollTrigger: {
-                            trigger: element,
-                            start: "top 90%",
-                            toggleActions: "play none none none",
-                            once: true
-                        }
-                    });
-                });
-        
-                // Mobile menu toggle
-                const menuBtn = document.getElementById('menu-btn');
-                const mobileMenu = document.getElementById('mobile-menu');
-        
-                if (menuBtn && mobileMenu) {
-                    menuBtn.addEventListener('click', () => {
-                        menuBtn.classList.toggle('open');
-                        mobileMenu.classList.toggle('open');
-                    });
-                    
-                    // Close mobile menu when clicking a link
-                    const menuLinks = mobileMenu.querySelectorAll('a');
-                    menuLinks.forEach(link => {
-                        link.addEventListener('click', () => {
-                            menuBtn.classList.remove('open');
-                            mobileMenu.classList.remove('open');
-                        });
-                    });
-                }
-            </script>
-        </body>
-        </html>
+    // ScrollReveal animations
+    ScrollReveal().reveal('[data-sr]', {
+      distance: '40px',
+      duration: 800,
+      easing: 'ease-out',
+      origin: 'bottom',
+      interval: 100
+    });
+  </script>
+</body>
+</html>
