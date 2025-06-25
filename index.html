@@ -729,6 +729,13 @@
             color: #556B2F; /* New green color for icons */
         }
         /* --- End Glass Cards --- */
+        #product-3d-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            display: block;
+            margin: 0 auto 2rem auto;
+        }
     </style>
 </head>
 <body class="bg-white text-[#333]">
@@ -950,6 +957,11 @@
                 </div>
             </div>
             <!-- End New Top 3 Products Section -->
+
+            <!-- Interactive 3D Showcase -->
+            <div class="fade-in-section">
+                <canvas id="product-3d-canvas"></canvas>
+            </div>
 
             <div class="products-grid">
                 <!-- Product Card 1: Cardamom -->
@@ -1360,6 +1372,7 @@
                     }
                     initFramerTagline();
                     initThreeHero();
+                    initProduct3D();
                 });
 
 
@@ -1404,6 +1417,39 @@
                         renderer.render(scene, camera);
                     }
                     animate();
+                    window.addEventListener('resize', () => {
+                        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+                    });
+                }
+
+                function initProduct3D() {
+                    const canvas = document.getElementById('product-3d-canvas');
+                    if (!canvas || !window.THREE) return;
+                    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+                    const scene = new THREE.Scene();
+                    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+                    camera.position.set(0, 1.5, 3);
+
+                    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+                    scene.add(light);
+
+                    const geometry = new THREE.CylinderGeometry(0.7, 0.8, 2, 32);
+                    const material = new THREE.MeshStandardMaterial({ color: 0xB8860B });
+                    const jar = new THREE.Mesh(geometry, material);
+                    scene.add(jar);
+
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        jar.rotation.y += 0.01;
+                        renderer.render(scene, camera);
+                    }
+                    animate();
+
                     window.addEventListener('resize', () => {
                         camera.aspect = canvas.clientWidth / canvas.clientHeight;
                         camera.updateProjectionMatrix();
